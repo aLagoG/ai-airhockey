@@ -20,7 +20,7 @@ import gamecore
 import guicore
 
 
-def initialize_state(board):
+def testing_init_state(board):
     state = {}
     state["delta_t"] = 1 / 30
     state["board_shape"] = board.shape
@@ -59,7 +59,7 @@ def main(args):
     # load our air hockey board
     board = cv.imread("assests/board.png")
 
-    state = initialize_state(board)
+    state = testing_init_state(board)
     epsilon = 1
 
     # initiallize gui core
