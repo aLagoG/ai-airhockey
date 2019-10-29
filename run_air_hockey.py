@@ -13,17 +13,14 @@ import importlib
 import random
 import logging
 import json
+import time
 
 import cv2 as cv
 import gamecore
 import guicore
 
 
-def main(args):
-    # load our air hockey board
-    board = cv.imread("assests/board.png")
-
-    # initiallize game state
+def initialiaze_state(board):
     state = {}
     state["delta_t"] = 1 / 30
     state["board_shape"] = board.shape
@@ -55,6 +52,14 @@ def main(args):
     state["paddle_max_speed"] = 150
     state["goals"] = {"left": 0, "right": 0}
     state["is_goal_move"] = None
+    return state
+
+
+def main(args):
+    # load our air hockey board
+    board = cv.imread("assests/board.png")
+
+    state = initialiaze_state(board)
     epsilon = 1
 
     # initiallize gui core

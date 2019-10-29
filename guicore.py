@@ -25,7 +25,7 @@ class GUICore:
         if save_video:
             self.out_vid = cv.VideoWriter(
                 video_file,
-                cv.VideoWriter_fourcc(*"H264"),
+                cv.VideoWriter_fourcc(*"MJPG"),
                 30,
                 (self.board.shape[1], int(round(self.board.shape[0] * 1.25))),
             )
