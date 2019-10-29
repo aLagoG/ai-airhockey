@@ -15,6 +15,7 @@ The only restrictions here are:
 
 import copy
 import utils
+import random
 
 
 class Player:
@@ -57,9 +58,10 @@ class Player:
             "x": 0 if self.my_goal == "left" else current_state["board_shape"][1],
             "y": current_state["board_shape"][0] / 2,
         }
+        y = random.uniform(140, 370)
         self.opponent_goal_center = {
             "x": 0 if self.my_goal == "right" else current_state["board_shape"][1],
-            "y": current_state["board_shape"][0] / 2,
+            "y": y,
         }
 
         # find if puck path is inside my interest area
@@ -113,8 +115,6 @@ class Player:
                 ):
                     self.my_paddle_pos = new_paddle_pos
 
-        # time.sleep(2)
-        # return {'x': -12, 'y': -6543}
         return self.my_paddle_pos
 
 

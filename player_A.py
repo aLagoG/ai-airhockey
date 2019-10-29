@@ -113,8 +113,6 @@ class Player:
                 ):
                     self.my_paddle_pos = new_paddle_pos
 
-        # time.sleep(2)
-        # return {'x': -12, 'y': -6543}
         return self.my_paddle_pos
 
 
