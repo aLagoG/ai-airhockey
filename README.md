@@ -3,7 +3,7 @@ Este es el repositorio para nuestra actividad de semana i.
 
 ## Objetivo del reto
 
-Crear un algoritmo que permita determinar los movimientos del mazo buscando anotar gol en la portería contraria. 
+Crear un algoritmo que permita determinar los movimientos del mazo buscando anotar gol en la portería contraria.
 
 _Se podrá utilizar todo tipo de algoritmos, desde algoritmos que implementen estrategias propias de los programadores, algoritmos adaptados de otros problemas o algoritmos de aprendizaje automático._
 
