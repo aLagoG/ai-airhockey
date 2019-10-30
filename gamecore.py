@@ -12,6 +12,7 @@ import copy
 import time
 
 import game.utils as utils
+import traceback
 
 
 class GameCore:
@@ -77,6 +78,7 @@ class GameCore:
                     "TIME VIOLATION by: " + self.player1.my_display_name
                 )
             except Exception as exc:
+                traceback.print_exc()
                 self.gui_core.release_all()
                 return {
                     "status": "ERROR",
@@ -97,6 +99,7 @@ class GameCore:
                     "TIME VIOLATION by: " + self.player2.my_display_name
                 )
             except Exception as exc:
+                traceback.print_exc()
                 self.gui_core.release_all()
                 return {
                     "status": "ERROR",
@@ -237,6 +240,7 @@ class GameCore:
         return None
 
     def process_goal_for(self, goal_for, puck_to=None):
+        print("goal_for: ", goal_for)
         # update scores
         self.goals[goal_for] += 1
         self.state["goals"] = self.goals

@@ -68,7 +68,7 @@ def run_game(board, player1_module, player2_module, **kwargs):
     )
 
     # create player instances
-    player1 = player1_module.Player(state["paddle1_pos"], "left")
+    player1 = player1_module.Player(state["paddle1_pos"], "left", gui_core=gui_core)
     player2 = player2_module.Player(state["paddle2_pos"], "right")
 
     # create game with given players
