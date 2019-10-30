@@ -14,10 +14,10 @@ import random
 import logging
 import json
 import time
-
 import cv2 as cv
-import gamecore
-import guicore
+
+import game.gamecore as gamecore
+import game.guicore as guicore
 
 
 def initialize_state(board):
@@ -55,21 +55,17 @@ def initialize_state(board):
     return state
 
 
-def main(args):
-    # load our air hockey board
-    board = cv.imread("assests/board.png")
-
+def run_game(board, player1_module, player2_module, **kwargs):
     state = initialize_state(board)
     epsilon = 1
 
     # initiallize gui core
     gui_core = guicore.GUICore(
-        board, not args.hide_window, args.video_file is not None, args.video_file
+        board,
+        not kwargs["hide_window"],
+        kwargs["video_file"] is not None,
+        kwargs["video_file"],
     )
-
-    # dinamically import Player classes for both players
-    player1_module = importlib.import_module(args.player1)
-    player2_module = importlib.import_module(args.player2)
 
     # create player instances
     player1 = player1_module.Player(state["paddle1_pos"], "left")
@@ -79,7 +75,24 @@ def main(args):
     game_core = gamecore.GameCore(player1, player2, board, state, epsilon, gui_core)
 
     # run game
-    result = game_core.begin_game()
+    return player1, player2, game_core.begin_game()
+
+
+def prepare(**kwargs):
+    # load our air hockey board
+    board = cv.imread("assests/board.png")
+
+    # dinamically import Player classes for both players
+    player1_module = importlib.import_module(kwargs["player1"])
+    player2_module = importlib.import_module(kwargs["player2"])
+
+    return board, player1_module, player2_module
+
+
+def main(**kwargs):
+    board, player1_module, player2_module = prepare(**kwargs)
+
+    player1, player2, result = run_game(board, player1_module, player2_module, **kwargs)
 
     # prepare output
     # convert exception data types to string
@@ -128,7 +141,7 @@ if __name__ == "__main__":
     args_ = parser.parse_args()
 
     try:
-        sys.exit(main(args_))
+        sys.exit(main(**vars(args_)))
     except Exception as exc:
         logging.error(" Oops... something went wrong :(", exc_info=True)
         status = {

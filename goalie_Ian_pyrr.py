@@ -1,7 +1,7 @@
 import random
 import math
 import numpy as np
-from utils import distance_between_points
+from game.utils import distance_between_points
 from functools import wraps
 from time import time
 

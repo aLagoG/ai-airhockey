@@ -1,6 +1,6 @@
 import random
 import math
-from utils import distance_between_points
+from game.utils import distance_between_points
 
 
 def clamp(lower, x, upper):

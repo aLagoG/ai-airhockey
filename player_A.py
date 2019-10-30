@@ -14,7 +14,8 @@ The only restrictions here are:
 """
 
 import copy
-import utils
+
+import game.utils as utils
 
 
 class Player:

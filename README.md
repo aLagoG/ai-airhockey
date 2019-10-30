@@ -1,4 +1,5 @@
 # RETO de Semana i: AI-AirHockey
+
 Este es el repositorio para nuestra actividad de semana i.
 
 ## Objetivo del reto
@@ -9,7 +10,4 @@ _Se podrá utilizar todo tipo de algoritmos, desde algoritmos que implementen es
 
 Equipos de hasta 3 estudiantes.
 
-**Para todos los detalles revise ~/docs/20191028_AI-AirHockey-Semanai_.pdf**
-
-
-
+**Para todos los detalles revise ~/docs/20191028*AI-AirHockey-Semanai*.pdf**
