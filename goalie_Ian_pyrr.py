@@ -110,77 +110,6 @@ class Player:
         self.opponent_goal_center = {}
         self.my_paddle_pos = paddle_pos
 
-    # NEW RANDOM
-    # def next_move(self, current_state):
-    #     current_pos = current_state[
-    #         "paddle1_pos" if self.my_goal == "left" else "paddle2_pos"
-    #     ]
-
-    #     x = random.random() * 2 - 1
-    #     y = random.random() * 2 - 1
-
-    #     magnitude = math.sqrt(x ** 2 + y ** 2)
-
-    #     # print("mag: ", magnitude)
-    #     x = 5 * (x / magnitude)
-    #     y = 5 * (y / magnitude)
-
-    #     new_pos = clamp_board_vector(current_pos, {"x": x, "y": y}, self.my_goal)["new_pos"]
-
-    #     # print('x: ' ,current_pos['x'], 'y: ',current_pos['y'])
-    #     # print('new_x: ', new_x, 'new_y: ', new_y)
-
-    #     return new_pos
-
-    # Follow
-    # def next_move(self, current_state):
-    #     current_pos = current_state[
-    #         "paddle1_pos" if self.my_goal == "left" else "paddle2_pos"
-    #     ]
-
-    #     new_pos = {}
-    #     new_pos["x"] = current_state["puck_pos"]["x"]
-    #     new_pos["y"] = current_state["puck_pos"]["y"]
-
-    #     # print('x: ' ,current_pos['x'], 'y: ',current_pos['y'])
-    #     # print('new_x: ', new_x, 'new_y: ', new_y)
-
-    #     new_pos = clamp_speed_point(current_pos, new_pos)["new_pos"]
-    #     new_pos = clamp_board_point(current_pos, new_pos, self.my_goal)["new_pos"]
-    #     return new_pos
-
-    # Follow Y
-    # def next_move(self, current_state):
-    #     current_pos = current_state['paddle1_pos' if self.my_goal == 'left' else 'paddle2_pos']
-
-    #     x = 0
-    #     y = current_state['puck_pos']['y'] - current_pos['y']
-
-    #     magnitude = math.sqrt(x**2 + y**2)
-
-    #     # print('mag: ', magnitude)
-    #     x = 5*(x / magnitude)
-    #     y = 5*(y / magnitude)
-
-    #     puck_radius = current_state['puck_radius']
-
-    #     new_x = current_pos['x'] + x
-    #     new_y = current_pos['y'] + y
-
-    #     new_x = clamp(puck_radius + 10,new_x, current_state['board_shape'][1] - puck_radius - 10)
-    #     new_y = clamp(puck_radius + 10,new_y, current_state['board_shape'][0] - puck_radius - 10)
-
-    #     if(self.my_goal == 'left'):
-    #         new_x = clamp(116, new_x, 400)
-
-    #     else:
-    #         new_x = clamp(600, new_x, 884)
-
-    #     # print('x: ' ,current_pos['x'], 'y: ',current_pos['y'])
-    #     # print('new_x: ', new_x, 'new_y: ', new_y)
-
-    #     return {'x': new_x, 'y': new_y}
-
     # Goalie Y
     @measure
     def next_move(self, current_state):
@@ -226,7 +155,7 @@ class Player:
         else:
             move_to_x = puck_pos[0]
 
-        new_pos = np.array([move_to_x, puck_pos[0]])
+        new_pos = np.array([move_to_x, puck_pos[1]])
         new_pos[1] = clamp(
             BOARD_Y / 2 - GOAL_RADIUS, new_pos[1], BOARD_Y / 2 + GOAL_RADIUS
         )
@@ -234,21 +163,3 @@ class Player:
         new_pos = clamp_speed_point(current_pos, new_pos)["new_pos"]
         new_pos = clamp_board_point(current_pos, new_pos, self.my_goal)["new_pos"]
         return {"x": new_pos[0], "y": new_pos[1]}
-
-    #     new_x = clamp(
-    #         puck_radius + 10, new_x, current_state["board_shape"][1] - puck_radius - 10
-    #     )
-    #     new_y = clamp(
-    #         256 - goal_radius + puck_radius, new_y, 256 + goal_radius - puck_radius
-    #     )
-
-    #     if self.my_goal == "left":
-    #         new_x = clamp(116, new_x, 400)
-
-    #     else:
-    #         new_x = clamp(600, new_x, 879)
-
-    #     # print('x: ' ,current_pos['x'], 'y: ',current_pos['y'])
-    #     # print('new_x: ', new_x, 'new_y: ', new_y)
-
-    #     return {"x": new_x, "y": new_y}

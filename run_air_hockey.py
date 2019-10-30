@@ -72,7 +72,7 @@ def main(args):
     player2_module = importlib.import_module(args.player2)
 
     # create player instances
-    player1 = player1_module.Player(state["paddle1_pos"], "left")
+    player1 = player1_module.Player(state["paddle1_pos"], "left", gui_core=gui_core)
     player2 = player2_module.Player(state["paddle2_pos"], "right")
 
     # create game with given players

@@ -30,6 +30,19 @@ class GUICore:
                 (self.board.shape[1], int(round(self.board.shape[0] * 1.25))),
             )
 
+        self.board_feedback = np.zeros(
+            (
+                int(round(self.board.shape[0] * 1.25)),
+                self.board.shape[1],
+                self.board.shape[2],
+            ),
+            dtype=self.board.dtype,
+        )
+        # visual feedback
+        self.board_feedback[: self.board.shape[0], : self.board.shape[1]] = copy.copy(
+            self.board
+        )
+
     def show_current_state(self, frame, sleep=False):
         cv.imshow("AIR HOCKEY", frame)
         # key = cv.waitKey()
@@ -47,34 +60,23 @@ class GUICore:
     def resolve_gui(self, state, p1, p2):
         if not self.save_video and not self.show_window:
             return 0
-        board_feedback = np.zeros(
-            (
-                int(round(self.board.shape[0] * 1.25)),
-                self.board.shape[1],
-                self.board.shape[2],
-            ),
-            dtype=self.board.dtype,
-        )
-        # visual feedback
-        board_feedback[: self.board.shape[0], : self.board.shape[1]] = copy.copy(
-            self.board
-        )
+
         cv.circle(
-            board_feedback,
+            self.board_feedback,
             utils.round_point_as_tuple(state["puck_pos"]),
             state["puck_radius"],
             (0, 0, 0),
             -1,
         )
         cv.circle(
-            board_feedback,
+            self.board_feedback,
             utils.round_point_as_tuple(state["paddle1_pos"]),
             state["paddle_radius"],
             (255, 0, 0),
             -1,
         )
         cv.circle(
-            board_feedback,
+            self.board_feedback,
             utils.round_point_as_tuple(state["paddle2_pos"]),
             state["paddle_radius"],
             (0, 0, 255),
@@ -87,13 +89,20 @@ class GUICore:
             ### write team's name
             pos_xy = (20, int(round(self.board.shape[0] * 1.20)))
             text_size = self.draw_text(
-                board_feedback, p1, pos_xy, (255, 0, 0), (255, 255, 255), 1, 3, "left"
+                self.board_feedback,
+                p1,
+                pos_xy,
+                (255, 0, 0),
+                (255, 255, 255),
+                1,
+                3,
+                "left",
             )
 
             ### write score
             pos_xy = (20, int(round(self.board.shape[0] * 1.20 - text_size[1] * 1.5)))
             self.draw_text(
-                board_feedback,
+                self.board_feedback,
                 str(state["goals"]["left"]),
                 pos_xy,
                 (255, 0, 0),
@@ -107,7 +116,14 @@ class GUICore:
             ### write team's name
             pos_xy = (self.board.shape[1] - 20, int(round(self.board.shape[0] * 1.20)))
             text_size = self.draw_text(
-                board_feedback, p2, pos_xy, (0, 0, 255), (255, 255, 255), 1, 3, "right"
+                self.board_feedback,
+                p2,
+                pos_xy,
+                (0, 0, 255),
+                (255, 255, 255),
+                1,
+                3,
+                "right",
             )
 
             ### write score
@@ -116,7 +132,7 @@ class GUICore:
                 int(round(self.board.shape[0] * 1.20 - text_size[1] * 1.5)),
             )
             self.draw_text(
-                board_feedback,
+                self.board_feedback,
                 str(state["goals"]["right"]),
                 pos_xy,
                 (0, 0, 255),
@@ -128,11 +144,11 @@ class GUICore:
         else:
             # write GOAL sign
             pos_xy = (
-                int(board_feedback.shape[1] / 2),
+                int(self.board_feedback.shape[1] / 2),
                 int(round(self.board.shape[0] * 1.20)),
             )
             self.draw_text(
-                board_feedback,
+                self.board_feedback,
                 "GOALLLL for " + (p1 if state["is_goal_move"] == "left" else p2),
                 pos_xy,
                 (0, 165, 255),
@@ -143,15 +159,29 @@ class GUICore:
             )
 
         if self.save_video:
-            self.write_current_state(board_feedback, state["is_goal_move"] is not None)
+            self.write_current_state(
+                self.board_feedback, state["is_goal_move"] is not None
+            )
         if self.show_window:
             if (
                 self.show_current_state(
-                    board_feedback, state["is_goal_move"] is not None
+                    self.board_feedback, state["is_goal_move"] is not None
                 )
                 < 0
             ):
                 return -1
+        self.board_feedback = np.zeros(
+            (
+                int(round(self.board.shape[0] * 1.25)),
+                self.board.shape[1],
+                self.board.shape[2],
+            ),
+            dtype=self.board.dtype,
+        )
+        # visual feedback
+        self.board_feedback[: self.board.shape[0], : self.board.shape[1]] = copy.copy(
+            self.board
+        )
         return 0
 
     def release_all(self):
@@ -160,6 +190,11 @@ class GUICore:
         if self.save_video:
             self.out_vid.release()
         return
+
+    def draw_line(self, point_a, point_b, color):
+        cv.line(
+            self.board_feedback, point_a, point_b, color, 1,
+        )
 
     def draw_text(
         self,
