@@ -4,6 +4,8 @@ import numpy as np
 from utils import distance_between_points
 from functools import wraps
 from time import time
+
+
 def measure(func):
     @wraps(func)
     def _time_it(*args, **kwargs):
@@ -13,7 +15,9 @@ def measure(func):
         finally:
             end_ = int(round(time() * 1000)) - start
             print(f"Total execution time: {end_ if end_ > 0 else 0} ms")
+
     return _time_it
+
 
 def clamp(lower, x, upper):
     return max(min(x, upper), lower)
@@ -22,14 +26,14 @@ def clamp(lower, x, upper):
 def clamp_speed_vector(current_pos, movement):
     magnitude = math.sqrt(movement[0] ** 2 + movement[1] ** 2)
     if magnitude > 5:
-        unit = movement/magnitude
-        movement = unit*5
-    new_pos = current_pos+movement
+        unit = movement / magnitude
+        movement = unit * 5
+    new_pos = current_pos + movement
     return {"new_pos": new_pos, "movement": movement}
 
 
 def clamp_speed_point(current_pos, new_pos):
-    return clamp_speed_vector(current_pos, new_pos-current_pos)
+    return clamp_speed_vector(current_pos, new_pos - current_pos)
 
 
 BOARD_X = 995
@@ -49,14 +53,18 @@ def is_out_of_bounds(pos, side):
     if side == "left":
         if pos[0] < PADDLE_RADIUS or pos[0] > BOARD_X / 2 - PADDLE_RADIUS:
             return True
-        distance = distance_between_points({"x": pos[0], "y": pos[1]}, {"x": 0, "y": BOARD_Y / 2})
+        distance = distance_between_points(
+            {"x": pos[0], "y": pos[1]}, {"x": 0, "y": BOARD_Y / 2}
+        )
         if distance < GOAL_RADIUS:
             return True
     else:
         if pos[0] < BOARD_X / 2 + PADDLE_RADIUS or pos[0] > BOARD_X - PADDLE_RADIUS:
             return True
 
-        distance = distance_between_points({"x": pos[0], "y": pos[1]}, {"x": BOARD_X, "y": BOARD_Y / 2})
+        distance = distance_between_points(
+            {"x": pos[0], "y": pos[1]}, {"x": BOARD_X, "y": BOARD_Y / 2}
+        )
         if distance < GOAL_RADIUS:
             return True
 
@@ -66,22 +74,22 @@ def is_out_of_bounds(pos, side):
 def clamp_board_vector(current_pos, movement, side):
 
     # print("curr_x:", current_pos["x"], "curr_y:", current_pos["y"])
-    new_pos = current_pos+movement
+    new_pos = current_pos + movement
 
     magnitude = math.sqrt(movement[0] ** 2 + movement[1] ** 2)
 
-    unit = movement/magnitude
+    unit = movement / magnitude
     # print("unit_x:", unit["x"], "unit_y:", unit["y"])
 
     if not is_out_of_bounds(new_pos, side):
         return {"new_pos": new_pos, "movement": movement}
 
     for i in range(5, -1, -1):
-        new_mov = (i*unit).astype(int)
+        new_mov = (i * unit).astype(int)
         # new_mov["x"] = int(i * unit["x"])
         # new_mov["y"] = int(i * unit["y"])
 
-        new_pos = current_pos+new_mov
+        new_pos = current_pos + new_mov
         # print("i:", i, "x:", new_pos["x"], "y:", new_pos["y"])
 
         if not is_out_of_bounds(new_pos, side):
@@ -89,7 +97,7 @@ def clamp_board_vector(current_pos, movement, side):
 
 
 def clamp_board_point(current_pos, new_pos, side):
-    return clamp_board_vector(current_pos, new_pos-current_pos, side)
+    return clamp_board_vector(current_pos, new_pos - current_pos, side)
 
 
 class Player:
@@ -176,9 +184,13 @@ class Player:
     # Goalie Y
     @measure
     def next_move(self, current_state):
-        current_pos = np.array(list(current_state[
-            "paddle1_pos" if self.my_goal == "left" else "paddle2_pos"
-        ].values()))
+        current_pos = np.array(
+            list(
+                current_state[
+                    "paddle1_pos" if self.my_goal == "left" else "paddle2_pos"
+                ].values()
+            )
+        )
 
         puck_speed = np.array(list(current_state["puck_speed"].values()))
         puck_pos = np.array(list(current_state["puck_pos"].values()))
@@ -221,7 +233,7 @@ class Player:
 
         new_pos = clamp_speed_point(current_pos, new_pos)["new_pos"]
         new_pos = clamp_board_point(current_pos, new_pos, self.my_goal)["new_pos"]
-        return {"x": new_pos[0] , "y": new_pos[1]}
+        return {"x": new_pos[0], "y": new_pos[1]}
 
     #     new_x = clamp(
     #         puck_radius + 10, new_x, current_state["board_shape"][1] - puck_radius - 10
