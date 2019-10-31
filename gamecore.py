@@ -216,7 +216,7 @@ class GameCore:
             }
 
         # check if game ticks were consumed
-        if self.game_elapsed_ticks > self.game_max_ticks:
+        if self.game_elapsed_ticks >= self.game_max_ticks:
             # check is game is tied
             # if yes, give extra 30% time
             # if not, declare a winner
@@ -228,7 +228,11 @@ class GameCore:
                     "goals": self.goals,
                     "winner": self.goal_sides[winner].my_display_name,
                 }
-            elif self.game_elapsed_ticks > self.game_max_ticks * 1.3:
+            elif self.game_elapsed_ticks == self.game_max_ticks:
+                self.error_rate *= 2
+            elif self.game_elapsed_ticks == round(self.game_max_ticks * 1.3):
+                self.error_rate *= 4
+            elif self.game_elapsed_ticks > self.game_max_ticks * 1.6:
                 return {
                     "status": "SUCCESS",
                     "info": "Game tied by time",
@@ -296,7 +300,9 @@ class GameCore:
                 self.in_initial_state += 1
 
         # update pos in state
-        self.state["puck_pos"] = new_puck_pos
+        self.state["puck_pos"] = utils.rectify_cicle_out_of_board(
+            new_puck_pos, None, self.state
+        )
 
         # if is goal
         if utils.is_goal(self.state) is not None:

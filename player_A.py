@@ -18,6 +18,7 @@ import copy
 import game.utils as utils
 
 
+
 class Player:
     def __init__(self, paddle_pos, goal_side):
 
