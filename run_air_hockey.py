@@ -69,7 +69,7 @@ def run_game(board, player1_module, player2_module, **kwargs):
 
     # create player instances
     player1 = player1_module.Player(state["paddle1_pos"], "left", gui_core=gui_core)
-    player2 = player2_module.Player(state["paddle2_pos"], "right")
+    player2 = player2_module.Player(state["paddle2_pos"], "right", gui_core=gui_core)
 
     # create game with given players
     game_core = gamecore.GameCore(player1, player2, board, state, epsilon, gui_core)

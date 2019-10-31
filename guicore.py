@@ -144,11 +144,11 @@ class GUICore:
         else:
             # write GOAL sign
             pos_xy = (
-                int(board_feedback.shape[1] / 2),
+                int(self.board_feedback.shape[1] / 2),
                 int(round(self.board.shape[0] * 1.20)),
             )
             self.draw_text(
-                board_feedback,
+                self.board_feedback,
                 "GOALLL for " + (p1 if state["is_goal_move"] == "left" else p2),
                 pos_xy,
                 (0, 165, 255),
@@ -189,7 +189,6 @@ class GUICore:
             cv.destroyAllWindows()
         if self.save_video:
             self.out_vid.release()
-        return
 
     def draw_line(self, point_a, point_b, color):
         cv.line(
