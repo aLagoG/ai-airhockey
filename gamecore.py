@@ -10,9 +10,9 @@ the original version will be used.
 import random
 import copy
 import time
+import traceback
 
 import game.utils as utils
-import traceback
 
 
 class GameCore:
