@@ -13,7 +13,6 @@ import importlib
 import random
 import logging
 import json
-import time
 import cv2 as cv
 
 import game.gamecore as gamecore
@@ -142,7 +141,7 @@ if __name__ == "__main__":
 
     try:
         sys.exit(main(**vars(args_)))
-    except Exception as exc:
+    except Exception as exc:  # pylint: disable=broad-except
         logging.error(" Oops... something went wrong :(", exc_info=True)
         status = {
             "status": "ERROR",

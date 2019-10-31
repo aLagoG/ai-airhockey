@@ -189,7 +189,6 @@ class GUICore:
             cv.destroyAllWindows()
         if self.save_video:
             self.out_vid.release()
-        return
 
     def draw_line(self, point_a, point_b, color):
         cv.line(
