@@ -45,15 +45,13 @@ def is_out_of_boundaries(state):
         str: 'horizontal' or 'vertical' if is out of boundaries.
     """
     if (
-        next_pos_from_state(state)["x"] + state["puck_radius"]
-        >= state["board_shape"][1]
-        or next_pos_from_state(state)["x"] - state["puck_radius"] <= 0
+        state["puck_pos"]["x"] + state["puck_radius"] >= state["board_shape"][1]
+        or state["puck_pos"]["x"] - state["puck_radius"] <= 0
     ):
         return "horizontal"
     if (
-        next_pos_from_state(state)["y"] + state["puck_radius"]
-        >= state["board_shape"][0]
-        or next_pos_from_state(state)["y"] - state["puck_radius"] <= 0
+        state["puck_pos"]["y"] + state["puck_radius"] >= state["board_shape"][0]
+        or state["puck_pos"]["y"] - state["puck_radius"] <= 0
     ):
         return "vertical"
     return None
@@ -311,7 +309,7 @@ def rectify_circles_overlap(center_1, r_1, center_2, r_2):
     return {k: center_1[k] + v * (r_1 + r_2) for k, v in dir_vector.items()}
 
 
-def rectify_circle_out_of_bounds(pos, goal_side, state):
+def rectify_circle_out_of_bounds(pos, speed, goal_side, state):
     """ Function that moves the puck to a safe area if it is out of limits,
     i.e., out of board or inside goal area
 
@@ -324,17 +322,22 @@ def rectify_circle_out_of_bounds(pos, goal_side, state):
         New position for paddle if it was out of limits
     """
 
-    pos = rectify_cicle_out_of_board(pos, goal_side, state)
+    pos = rectify_cicle_out_of_board(pos, speed, goal_side, state)
     pos = rectify_cicle_inside_goal_area(pos, goal_side, state)
     return pos
 
 
-def rectify_cicle_out_of_board(pos, goal_side, state):
+def rectify_cicle_out_of_board(pos, speed, goal_side, state):
     board_shape = state["board_shape"]
     r = state["paddle_radius"]
+    magnitude = vector_l2norm(speed)
+    if magnitude == 0:
+        return pos
 
-    # check for board limits
-    if goal_side:
+    # opposite = {"x": -speed["x"] / magnitude, "y": -speed["y"] / magnitude}
+
+    if goal_side is not None:
+        # check for board limits
         lref = r if goal_side == "left" else board_shape[1] / 2 + r
         rref = board_shape[1] / 2 - r if goal_side == "left" else board_shape[1] - r
     else:
@@ -349,6 +352,50 @@ def rectify_cicle_out_of_board(pos, goal_side, state):
         pos["y"] = r
     if pos["y"] > board_shape[0] - r:
         pos["y"] = board_shape[0] - r
+
+    # DO NOT CLAMP SOLUTION
+    # if pos["x"] < lref:
+    #     print("a")
+    #     delta = abs(pos["x"] - lref)
+    #     delta = abs(delta / opposite["x"])
+    #     # print("d1:", delta)
+    #     # print("curr_x:", pos["x"])
+    #     # print("curr_y:", pos["y"])
+    #     pos["x"] += delta * opposite["x"]
+    #     pos["y"] += delta * opposite["y"]
+    #     print("curr_x:", pos["x"])
+    #     print("curr_y:", pos["y"])
+
+    # if pos["x"] > rref:
+    #     print("a")
+    #     delta = abs(pos["x"] - rref)
+    #     delta = abs(delta / opposite["x"])
+    #     # print("d2:", delta)
+    #     pos["x"] += delta * opposite["x"]
+    #     pos["y"] += delta * opposite["y"]
+    #     print("curr_x:", pos["x"])
+    #     print("curr_y:", pos["y"])
+
+    # if pos["y"] < r:
+    #     print("a")
+    #     delta = abs(pos["y"] - r)
+    #     delta = abs(delta / opposite["y"])
+    #     # print("d3:", delta)
+    #     pos["x"] += delta * opposite["x"]
+    #     pos["y"] += delta * opposite["y"]
+    #     print("curr_x:", pos["x"])
+    #     print("curr_y:", pos["y"])
+
+    # if pos["y"] > board_shape[0] - r:
+    #     print("a")
+    #     delta = abs(pos["y"] - (board_shape[0] - r))
+    #     delta = abs(delta / opposite["y"])
+    #     # print("d4:", delta)
+    #     pos["x"] += delta * opposite["x"]
+    #     pos["y"] += delta * opposite["y"]
+    #     print("curr_x:", pos["x"])
+    #     print("curr_y:", pos["y"])
+
     return pos
 
 
