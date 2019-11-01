@@ -195,9 +195,9 @@ class GUICore:
             self.board_feedback, point_a, point_b, color, 1,
         )
 
-    def draw_circle(self, center, radius, color):
+    def draw_circle(self, center, radius, color, filled=False):
         cv.circle(
-            self.board_feedback, center, radius, color, 1,
+            self.board_feedback, center, radius, color, -1 if filled else 1,
         )
 
     def draw_text(
